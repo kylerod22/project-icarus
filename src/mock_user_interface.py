@@ -25,13 +25,15 @@ import streamlit as st
 
 
 
-import importlib.util
+# import importlib.util
 
-# Load the file directly from the exact file path
-spec = importlib.util.spec_from_file_location("Mapping_Playpen_3", "/work/Mapping_Playpen_3.py")
-mapping_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mapping_module)
+# # Load the file directly from the exact file path
+# spec = importlib.util.spec_from_file_location("Mapping_Playpen_3", "/work/Mapping_Playpen_3.py")
+# mapping_module = importlib.util.module_from_spec(spec)
+# spec.loader.exec_module(mapping_module)
 
+
+from scripts import Mapping_Playpen_3 as mapping_module
 predicted_kp_ovalest_streamlit = mapping_module.predicted_kp_ovalest_streamlit
 
 
