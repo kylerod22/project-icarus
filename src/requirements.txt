@@ -1,5 +1,8 @@
 pandas
 numpy
+matplotlib
+folium
+ipython
 plotly
 pyarrow
 duckdb
