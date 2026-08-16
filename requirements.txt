@@ -8,3 +8,4 @@ pyarrow
 duckdb
 cartopy
 streamlit
+ipykernel
