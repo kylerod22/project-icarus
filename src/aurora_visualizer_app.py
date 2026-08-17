@@ -11,7 +11,12 @@ from PIL import Image
 import pandas as pd
 import os
 import numpy as np
-# from Mapping_Playpen_3 import create_kp_plot#, predicted_kp_ovalest_streamlit
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent
+image_path = ROOT_DIR / "images" / "GeomagneticStormsScale.png"
+
+
 
 st.set_page_config(page_title="Auroral Oval Predictor", layout="wide")
 st.title("Auroral Oval Forecast")
@@ -261,8 +266,6 @@ adjustable_oval()
 
 st.subheader("NOAA Geomagnetic Storm Scale")
 
-image_path = "images/GeomagneticStormsScale.png"
-
 st.image(
     image_path,
     caption="NOAA Space Weather Scale for Geomagnetic Storms (G1 - G5), from https://www.spaceweather.gov/noaa-scales-explanation",
@@ -277,7 +280,7 @@ st.write("This interactive step plot compares predicted Kp values (red) against 
 # Load and cache data for performance
 @st.cache_data
 def load_data():
-    return pd.read_csv("data/Processed/preds_2025.csv")
+    return pd.read_csv(ROOT_DIR / "data" / "Processed" / "preds_2025.csv")
 
 
 df = load_data()
