@@ -11,3 +11,5 @@ duckdb
 cartopy
 streamlit
 ipykernel
+joblib
+torch
