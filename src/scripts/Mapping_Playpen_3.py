@@ -8,8 +8,10 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from matplotlib.colors import LinearSegmentedColormap
 
+import plotly.graph_objects as go
 
-def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80.7, mag_pole_lon=-72.7, mode="dark_contrast", target_lat=None, target_lon=None, location_name=None):
+
+def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80.7, mag_pole_lon=-72.7, mode="dark_contrast", target_lat=None, target_lon=None, location_name=None, color_scheme = "green"):
     
     #base_equatorward_edge = 66.0 - (2.0 * forecast_kp)
     #base_peak_lat = base_equatorward_edge + 4.0 
@@ -18,12 +20,12 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
     base_equatorward_edge = 70.5 - (2.3 * forecast_kp) #67.5
     base_peak_lat = base_equatorward_edge + 3.5
     
-    # Create a grid of geographic latitudes and longitudes
+    # grid of geographic latitudes and longitudes
     lons = np.linspace(-180, 180, 360)
     lats = np.linspace(30, 90, 180) 
     lon2d, lat2d = np.meshgrid(lons, lats)
     
-    # Convert Geographic to Magnetic Latitude
+    # convert Geographic to Magnetic Latitude
     phi = np.radians(lat2d)
     lam = np.radians(lon2d)
     phi0 = np.radians(mag_pole_lat)
@@ -52,14 +54,15 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
     
     cos_diff = np.cos(np.radians(lon2d - solar_lon))
 
-    # Dynamic Peak Center (Teardrop shape: +5° dayside, -5° nightside)
+    # Dynamic peak Center (teardrop shape +5 dayside, -5 nightside)
     base_peak_lat = 70.0 - (1.2 * forecast_kp) #68.0 larger is smaller diam
     dynamic_peak_lat = base_peak_lat + (5.0 * cos_diff)
 
-    # Thickness scaling factor (thin dayside arc, broader nightside)
+    # Thickness scaling factor 
+    #thin dayside arc, broader nightside
     thickness_scale = 1.0 - 0.40 * cos_diff
 
-    # Slim, controlled widths for inner/outer fades
+    #  widths for inner/outer fades
     equatorward_std = (1.2 + 0.30 * forecast_kp) * thickness_scale
     poleward_std = (1.5 + 0.35 * forecast_kp) * thickness_scale
     plateau_width = (1.5 * forecast_kp) * thickness_scale #originally 0.5, change to 1 or 1.5 to make inner oval closer to pole as kp inc
@@ -122,13 +125,36 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
         text_color = "#ffffff"
 
     # Color Map Semi-transparent green gradient
-    colors = [
-        (0.0, 1.0, 0.3, 0.0),     
-        (0.0, 1.0, 0.3, 0.20),    
-        (0.0, 1.0, 0.3, 0.50),    
-        (0.0, 1.0, 0.3, 0.80)     
-    ]
-    aurora_cmap = LinearSegmentedColormap.from_list("aurora_green", colors)
+    if color_scheme == "green":
+        colors = [
+            (0.0, 1.0, 0.3, 0.0),     
+            (0.0, 1.0, 0.3, 0.20),    
+            (0.0, 1.0, 0.3, 0.50),    
+            (0.0, 1.0, 0.3, 0.80)     
+        ]
+    elif color_scheme == "pink":
+        colors = [
+            (1.0, 0.4, 0.7, 0.0),
+            (1.0, 0.4, 0.7, 0.20),
+            (1.0, 0.4, 0.7, 0.50),
+            (1.0, 0.4, 0.7, 0.80)
+        ]
+    elif color_scheme == "purple":
+        colors = [
+            (0.6, 0.2, 0.9, 0.0),
+            (0.6, 0.2, 0.9, 0.20),
+            (0.6, 0.2, 0.9, 0.50),
+            (0.6, 0.2, 0.9, 0.80)
+        ]
+    elif color_scheme == "red":
+        colors = [
+            (1.0, 0.1, 0.1, 0.0),
+            (1.0, 0.1, 0.1, 0.20),
+            (1.0, 0.1, 0.1, 0.50),
+            (1.0, 0.1, 0.1, 0.80)
+        ]
+    
+    aurora_cmap = LinearSegmentedColormap.from_list(f"aurora_{color_scheme}", colors)
     
     fig = plt.figure(figsize=(10, 10))
     fig.patch.set_facecolor(fig_bg) 
@@ -164,18 +190,58 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
     gl.ylabel_style = {"color": label_color, "size": 10, "weight": "bold"}
 #NEW CODE, commenting out other title
     title_text = f"Auroral Oval Forecast (Kp = {forecast_kp})\n{location_name}: {location_prob_pct:.1f}% Probability"
-#    if location_name and location_prob_pct is not None:
- #       title_text = f"Auroral Oval Forecast (Kp = {forecast_kp})\n{location_name}: {location_prob_pct:.1f}% Probability"
-  #  else:
-   #     title_text = f"Auroral Oval Forecast (Kp = {forecast_kp})"
-    #plt.title(
-    #    f"Auroral Oval Forecast (Kp = {forecast_kp})",
-    #    fontsize=16,
-    #    pad=20,
-    #    fontweight="bold",
-    #    color=text_color,
-    #)
+
     plt.title(title_text, fontsize=15, pad=15, fontweight="bold", color=text_color)
 
     # Change plt.show() to return fig
+    return fig
+
+
+def create_kp_plot(df: pd.DataFrame):
+    """Creates an interactive step plot with a range slider covering the full dataset."""
+    df = df.copy()
+    df["datetime"] = pd.to_datetime(df["datetime"])
+    df = df.sort_values("datetime")
+
+    # Build figure with full dataset
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["datetime"],
+            y=df["y_true"],
+            mode="lines",
+            line_shape="hv",
+            name="Observed Kp",
+            line=dict(color="#2B6B8A", width=1.5),
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["datetime"],
+            y=df["y_pred"],
+            mode="lines",
+            line_shape="hv",
+            name="Predicted Kp",
+            line=dict(color="#EE5244", width=1.5),
+        )
+    )
+
+    fig.update_layout(
+        title="Prediction vs Observed Kp (Full Dataset)",
+        xaxis_title="Datetime Slider",
+        yaxis_title="Kp",
+        yaxis=dict(range=[-0.5, 9]),
+        template="plotly_white",
+        xaxis=dict(
+            rangeslider=dict(visible=True),  # Interactive slider for zooming/pan
+            type="date",
+        ),
+        legend=dict(
+            orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+        ),
+        margin=dict(l=20, r=20, t=40, b=20),
+    )
+
     return fig
