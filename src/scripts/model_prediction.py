@@ -3,7 +3,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
-MODELS_DIR = Path('models')
+MODELS_DIR = Path(__file__).resolve().parents[1] / "models"
 HORIZON_CONFIG = {
     '0hr': {
         'model_path': MODELS_DIR / 'best_lasso_model_0hr.pkl',
