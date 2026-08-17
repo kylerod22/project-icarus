@@ -13,3 +13,4 @@ streamlit
 ipykernel
 joblib
 torch
+tzdata
