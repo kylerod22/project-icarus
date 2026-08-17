@@ -191,8 +191,18 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
 #NEW CODE, commenting out other title
     title_text = f"Auroral Oval Forecast (Kp = {forecast_kp})\n{location_name}: {location_prob_pct:.1f}% Probability"
 
-    plt.title(title_text, fontsize=15, pad=15, fontweight="bold", color=text_color)
-
+    ax.text(
+        0.5, 1.15,
+        title_text,
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=15,
+        fontweight="bold",
+        color=text_color,
+        zorder=10,
+        clip_on=False
+    )
     # Change plt.show() to return fig
     return fig
 
