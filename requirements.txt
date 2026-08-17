@@ -4,6 +4,7 @@ matplotlib
 folium
 ipython
 plotly
+nbformat
 pyarrow
 duckdb
 cartopy
