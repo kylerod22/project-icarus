@@ -21,7 +21,7 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
     base_peak_lat = base_equatorward_edge + 3.5
     
     # grid of geographic latitudes and longitudes
-    lons = np.linspace(-180, 180, 360)
+    lons = np.linspace(-180, 180, 360, endpoint=False)
     lats = np.linspace(30, 90, 180) 
     lon2d, lat2d = np.meshgrid(lons, lats)
     
@@ -191,18 +191,19 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
 #NEW CODE, commenting out other title
     title_text = f"Auroral Oval Forecast (Kp = {forecast_kp})\n{location_name}: {location_prob_pct:.1f}% Probability"
 
-    ax.text(
-        0.5, 1.15,
+    plt.title(
         title_text,
-        transform=ax.transAxes,
-        ha="center",
-        va="top",
-        fontsize=15,
+        fontsize=12,
         fontweight="bold",
         color=text_color,
-        zorder=10,
-        clip_on=False
+        pad=5,
+        y=1.05
     )
+
+    plt.subplots_adjust(
+        top=0.90
+    )
+
     # Change plt.show() to return fig
     return fig
 
