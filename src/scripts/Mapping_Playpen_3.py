@@ -255,7 +255,7 @@ def create_kp_plot(df: pd.DataFrame):
     )
 
     fig.update_layout(
-        title="Prediction vs Observed Kp (Full Dataset)",
+        title="Prediction vs Observed Kp (2025)",
         xaxis_title="Datetime Slider",
         yaxis_title="Kp",
         yaxis=dict(range=[-0.5, 9]),
