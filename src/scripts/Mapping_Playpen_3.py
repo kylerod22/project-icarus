@@ -156,10 +156,24 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
     
     aurora_cmap = LinearSegmentedColormap.from_list(f"aurora_{color_scheme}", colors)
     
-    fig = plt.figure(figsize=(10, 10))
-    fig.patch.set_facecolor(fig_bg) 
+    # fig = plt.figure(figsize=(10, 10))
+    # fig.patch.set_facecolor(fig_bg) 
     
-    ax = plt.axes(projection=ccrs.NorthPolarStereo(central_longitude=-90))
+    # ax = plt.axes(projection=ccrs.NorthPolarStereo(central_longitude=-90))
+
+    fig, ax = plt.subplots(
+        figsize=(10, 10),
+        dpi=150,
+        subplot_kw={
+            "projection": ccrs.NorthPolarStereo(
+                central_longitude=-90
+            )
+        }
+    )
+
+    fig.patch.set_facecolor(fig_bg)
+
+
     ax.set_facecolor(ocean_bg)
     
     ax.add_feature(cfeature.OCEAN, facecolor=ocean_bg)
@@ -205,6 +219,7 @@ def predicted_kp_ovalest_streamlit(forecast_kp=2, solar_lon=0.0, mag_pole_lat=80
     )
 
     # Change plt.show() to return fig
+    fig.canvas.draw()
     return fig
 
 

@@ -17,13 +17,12 @@ ROOT_DIR = Path(__file__).resolve().parent
 image_path = ROOT_DIR / "images" / "GeomagneticStormsScale.png"
 
 
-
 st.set_page_config(page_title="Auroral Oval Predictor", layout="wide")
 st.title("Auroral Oval Forecast")
 
 @st.cache_resource
 def init_app():
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "cartopy", "plotly"])
+    # subprocess.check_call([sys.executable, "-m", "pip", "install", "cartopy", "plotly"])
     from scripts import pipeline as Pipeline, Mapping_Playpen_3 as mapping_module
     predict_kp = Pipeline.RT_Pipeline
     predicted_kp_ovalest_streamlit = mapping_module.predicted_kp_ovalest_streamlit
@@ -216,6 +215,8 @@ with col1:
             location_name=selected_location_name
         )
 
+    fig_predicted.canvas.draw()
+
     st.pyplot(
         fig_predicted,
         use_container_width=False
@@ -250,6 +251,7 @@ def adjustable_oval():
                 color_scheme = COLOR_THEMES[selected_oval_color]
             )
 
+        fig_adjusted.canvas.draw()
         st.pyplot(
             fig_adjusted,
             use_container_width=False
