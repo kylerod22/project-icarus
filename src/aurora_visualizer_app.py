@@ -214,6 +214,12 @@ with col1:
     )
 
     plt.close(fig_predicted)
+    st.markdown("""
+    *Disclaimer: This application provides experimental estimates for informational purposes only. 
+    Aurora visibility and Kp predictions are generated using machine learning models and may differ from actual space weather conditions. 
+    Prediction uncertainty increases with longer forecast horizons, so forecasts should not be treated as guaranteed.*
+    ***Do not use these predictions as the sole basis for travel, safety, or other important decisions.***
+    *For the latest official space weather information, please consult NOAA and other authoritative sources.*""")
 
 with col2:
     st.subheader("Forecast")
