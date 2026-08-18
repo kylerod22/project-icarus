@@ -19,6 +19,7 @@ image_path = ROOT_DIR / "images" / "GeomagneticStormsScale.png"
 
 st.set_page_config(page_title="Auroral Oval Predictor", layout="wide")
 st.title("Auroral Oval Forecast")
+st.markdown("#### **Created by Sophia Menchaca, Kyle Rodriguez, and Tony Lett**")
 
 @st.cache_resource
 def init_app():
@@ -130,7 +131,8 @@ target_lat, target_lon = LOCATIONS[selected_location_name]
 forecast_horizon = st.sidebar.selectbox("Select Forecast Window", list(HORIZONS.keys()))
 target_horizon = HORIZONS[forecast_horizon]
 
-
+# Timezone Selector
+selected_tz_str = st.sidebar.selectbox("Select Timezone", TIMEZONES, index=0)
 
 # ---------------- ADJUSTABLE SETTINGS ----------------
 
@@ -148,20 +150,9 @@ selected_time = st.sidebar.time_input("Select Time", value=datetime.time(12, 0))
 #Color choices
 selected_oval_color = st.sidebar.selectbox("Select Color", list(COLOR_THEMES.keys()))
 
-
-# ---------------- USER SETTINGS ----------------
-st.sidebar.header("User Settings")
-
-# Timezone Selector
-selected_tz_str = st.sidebar.selectbox("Select Timezone", TIMEZONES, index=0)
-
 # Theme
 theme = st.sidebar.radio("Map Theme", list(THEMES.keys()))
 mode_theme = THEMES[theme]
-
-
-
-
 
 # Time Calculations
 def calc_solar_longitude(in_dt):
